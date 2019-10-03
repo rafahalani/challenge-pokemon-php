@@ -5,7 +5,7 @@ echo "<br>";
 $url = "https://pokeapi.co/api/v2/pokemon";
 $id = $_POST['Id_or_Name'];
 $json = file_get_contents($url . '/' . $id);
-$data = json_decode($json, true);
+$data = json_decode($json, true); //first fetch to get the pokemon name,id, pictureand four powers
 
 $image = $data["sprites"]["front_default"];
 
@@ -16,8 +16,8 @@ function getPowers($data) : array
 {
     $randomPower = [];
     for ($i = 0; $i < 4; $i++) {
-        $moves_random = array_rand($data["moves"]);
-        $randomPower[] = $data["moves"][$moves_random]["move"]["name"];
+        $moves_random = array_rand($data["moves"]);//take random number from moves
+        $randomPower[] = $data["moves"][$moves_random]["move"]["name"]; // take the name of that move
     }
     return ($randomPower);
 }
@@ -54,8 +54,12 @@ $idSpi = $data3 ["id"];
     <div class="input-group mb-3">
 
         <form method="post" action="">
-            Name or Id : <input type="text" name="Id_or_Name" value="">
-            <button class="btn" type="submit" id="run"><i class="icon-egg"></i></button>
+
+          <input type="text" name="Id_or_Name" value="2">
+            Press
+            <button class="btn" type="submit" id="run">
+                <i class="icon-egg"></i>
+            </button>
         </form>
 
 
@@ -72,17 +76,25 @@ $idSpi = $data3 ["id"];
         <div class="col-sm-4 previousPokemon">
             <div class="imageContainer mx-auto">
                 <div class="placeholder ">
-                    <img id="imgPrevious" class="responsive-image" src="<?php echo "$image2" ?>">
+                    <img id="imgPrevious" class="responsive-image" src="<?php
+                    if ($data2["evolves_from_species"] == null)
+                        echo "https://icons-for-free.com/iconfiles/png/512/pikachu+pokeball+pokemon+icon-1320184857556086253.png";
+                    else
+                    echo "$image2" ?>">
                 </div>
             </div>
             <div class="col wrapName rounded">
-                Evolution from: <?php echo "$spiName"?>
-                <div id="evolution"></div>
+                Evolution from:
+                <div id="evolution"><?php
+                    if ($data2["evolves_from_species"] == null)
+                        echo "it's a baby!";
+                    else
+                        echo "$spiName"?></div>
             </div>
             <div class="w-100"></div>
             <div class="col wrapId rounded">
-                ID: <?php echo "$idSpi"?>
-                <div id="idnum"></div>
+                ID:
+                <div id="idnum"><?php echo "$idSpi"?></div>
             </div>
 
         </div>
@@ -109,7 +121,6 @@ $idSpi = $data3 ["id"];
                 <div id="target">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <div> Move</div>
                             <?php
                             $randomPower = getPowers($data);
                             for ($i = 0; $i < 4 ; $i++){
